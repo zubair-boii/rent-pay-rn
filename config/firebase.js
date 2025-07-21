@@ -5,12 +5,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCC1yuTa58vj7RkkUxCmsi4sf6Xmf72z0U",
-  authDomain: "rentpay-expo.firebaseapp.com",
-  projectId: "rentpay-expo",
-  storageBucket: "rentpay-expo.appspot.com", // Fixed `.app` to `.com`
-  messagingSenderId: "679618070969",
-  appId: "1:679618070969:web:d6c19b5c054a109e584e68",
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_STORAGE_BUCKET, // Fixed `.app` to `.com`
+  messagingSenderId: process.env.EXPO_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_APP_ID,
 };
 
 // Initialize Firebase App
