@@ -34,22 +34,22 @@ const ProfileModalScreen = () => {
   useEffect(() => {
     if (user) {
       setUserData({
-        username: user.userName || "",
-        image: user.image || null,
+        username: user?.userName || "",
+        image: user?.image || null,
       });
     }
   }, [user]);
 
   const onImagePick = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images", "videos"],
-      allowsEditing: true,
+      mediaTypes: ["images"],
+      // allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.5,
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      setUserData({ ...userData, image: result.assets[0] });
     }
   };
 
@@ -72,7 +72,7 @@ const ProfileModalScreen = () => {
         router.back();
       }
 
-      Alert.alert("Update Profile", res.msg);
+      // TODO: notify user of success
     } catch (error) {
       console.log(error);
       Alert.alert("Update Profile", `Something went wrong. ${error}`);
@@ -109,7 +109,11 @@ const ProfileModalScreen = () => {
           {/* Profile Image */}
           <View className="relative self-center w-[50%] aspect-square my-[10%]">
             <Image
-              source={getProfileImage(userData.image)}
+              source={
+                typeof getProfileImage(userData.image) === "string"
+                  ? { uri: getProfileImage(userData.image) }
+                  : getProfileImage(userData.image)
+              }
               className="w-full h-full rounded-full"
               resizeMode="cover"
             />
