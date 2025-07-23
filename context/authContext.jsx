@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -16,27 +17,31 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
-      console.log("firebase user: ", firebaseUser);
-
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const userData = {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
-          userName: firebaseUser.displayName,
-          image: firebaseUser.photoURL,
+          userName: firebaseUser.displayName ?? null,
+          image: firebaseUser.photoURL ?? null,
         };
+
         setUser(userData);
 
-        if (router.pathname !== "/home") {
-          router.replace("/home");
+        const docSnap = await getDoc(doc(firestore, "users", firebaseUser.uid));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUser((prev) => ({
+            ...prev,
+            userName: data.userName || prev.userName,
+            createdAt: data.createdAt || null,
+          }));
         }
+
+        router.replace("/home");
       } else {
         setUser(null);
-
-        if (router.pathname !== "/welcome") {
-          router.replace("/welcome");
-        }
+        router.replace("/welcome");
       }
     });
 
@@ -57,18 +62,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (email, password, username) => {
+  const register = async (email, password, userName) => {
     try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const res = await createUserWithEmailAndPassword(auth, email, password);
 
-      await setDoc(doc(firestore, "users", response.user.uid), {
-        username,
+      await updateProfile(res.user, {
+        displayName: userName,
+      });
+
+      await setDoc(doc(firestore, "users", res.user.uid), {
+        userName,
         email,
-        uid: response.user.uid,
+        uid: res.user.uid,
         createdAt: serverTimestamp(),
       });
 
@@ -83,7 +88,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const updateUserData = async (uid) => {
+  const refreshUserData = async (uid) => {
     try {
       const docRef = doc(firestore, "users", uid);
       const docSnap = await getDoc(docRef);
@@ -91,16 +96,23 @@ export const AuthProvider = ({ children }) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         const userData = {
-          username: data.username,
-          email: data.email || null,
-          uid: data.uid || null,
-          createdAt: data.createdAt || null,
-          image: data.image || null,
+          uid: data?.uid,
+          email: data?.email,
+          userName: data?.userName,
+          image: data?.image,
+          createdAt: data?.createdAt,
         };
-        setUser(userData);
+
+        setUser({ ...userData });
       }
     } catch (error) {
-      console.log("updateUserData error:", error.message);
+      const msg = error.message
+        .replace("Firebase:", "")
+        .replace("auth/", "")
+        .replace(/-/g, " ")
+        .trim();
+      // return { success: false, msg };
+      console.log(msg);
     }
   };
 
@@ -108,18 +120,17 @@ export const AuthProvider = ({ children }) => {
     try {
       await signOut(auth);
     } catch (error) {
-      console.log("logout error:", error.message);
+      console.log("Logout error:", error.message);
     }
   };
 
   const contextValue = useMemo(
     () => ({
       user,
-      setUser,
       login,
       register,
-      updateUserData,
       logout,
+      refreshUserData,
     }),
     [user]
   );

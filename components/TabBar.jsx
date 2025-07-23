@@ -1,14 +1,18 @@
 // components/TabBar.tsx
 
-import { ClockCounterClockwise, House, User } from "phosphor-react-native";
+import {
+  ClockCounterClockwiseIcon,
+  HouseIcon,
+  UserIcon,
+} from "phosphor-react-native";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import TabBarButton from "./TabBarButton";
 
 const ICONS = {
-  home: House,
-  history: ClockCounterClockwise,
-  profile: User,
+  home: HouseIcon,
+  history: ClockCounterClockwiseIcon,
+  profile: UserIcon,
 };
 
 const TabBar = ({ state, descriptors, navigation }) => {

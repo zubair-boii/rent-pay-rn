@@ -8,14 +8,15 @@ import {
 
 const CustomButton = ({
   children,
+  loadingSize = 25,
   loading = false,
   onPress,
   backgroundColor = "#3fbdf1",
   textColor = "#FFFFFF",
-  fontSize = 16,
-  fontWeight = "600",
+  fontSize = 18,
+  fontWeight = "700",
   fontFamily,
-  paddingVertical = 10,
+  paddingVertical = 18,
   paddingHorizontal = 28,
   borderRadius = 20,
   buttonStyle,
@@ -44,7 +45,7 @@ const CustomButton = ({
       {...props}
     >
       {loading ? (
-        <ActivityIndicator color={indicatorColor} size={fontSize} />
+        <ActivityIndicator color={indicatorColor} size={loadingSize} />
       ) : (
         <Text
           style={[

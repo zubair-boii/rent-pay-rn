@@ -1,7 +1,8 @@
 import { useRouter } from "expo-router";
 import React from "react";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 import Typo from "../../components/Typo";
 
@@ -9,7 +10,7 @@ const WelcomeScreen = () => {
   const router = useRouter();
 
   return (
-    <SafeAreaView className="bg-slate-800 flex-1">
+    <SafeAreaProvider className="bg-slate-800 flex-1">
       {/* Top-right Sign in link */}
       <View className="items-end p-6">
         <TouchableOpacity
@@ -80,7 +81,7 @@ const WelcomeScreen = () => {
           </CustomButton>
         </Animated.View>
       </View>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 

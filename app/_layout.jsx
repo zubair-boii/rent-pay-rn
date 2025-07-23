@@ -8,9 +8,10 @@ import "../global.css";
 const RootLayout = () => {
   return (
     <>
-      <StatusBar barStyle={"default"}></StatusBar>
+      <StatusBar translucent={true} animated={true} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="(modals)/profileModal" />
       </Stack>
     </>
   );

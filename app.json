@@ -12,11 +12,15 @@
       "supportsTablet": true
     },
     "android": {
+      "androidNavigationBar": {
+        "visible": "leanback",
+        "barStyle": "dark-content"
+      },
+      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true
+      }
     },
     "web": {
       "bundler": "metro",
