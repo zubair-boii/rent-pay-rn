@@ -1,10 +1,7 @@
-import { useRouter } from "expo-router";
 import React from "react";
 import { Image, View } from "react-native";
 
 const Index = () => {
-  const router = useRouter();
-
   // useEffect(() => {
   //   setTimeout(() => {
   //     router.replace("./login");

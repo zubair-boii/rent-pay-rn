@@ -6,11 +6,17 @@ const InputField = ({
   onChangeText,
   placeholder,
   secureTextEntry = false,
-  Icon = null, // <-- Accept icon component directly
-  iconProps = {}, // <-- Optional icon props
+  Icon = null, // Prefix icon component
+  SuffixIcon = null, // Suffix icon component
+  iconProps = {},
+  suffixIconProps = {},
   style = {},
   inputStyle = {},
   containerStyle = {},
+  borderRadius = 12,
+  paddingHorizontal = 16,
+  paddingVertical = 8,
+  onSuffixIconPress = null, // Optional tap handler for suffix icon
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -20,16 +26,16 @@ const InputField = ({
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#1E293B", // slate-800
-        borderRadius: 12,
+        borderRadius: borderRadius,
         borderWidth: 1,
-        borderColor: isFocused ? "#3fbdf1" : "#334155", // violet/slate
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        marginVertical: 8,
+        borderColor: isFocused ? "#3fbdf1" : "#334155", // focus/blur
+        paddingHorizontal: paddingHorizontal,
+        paddingVertical: paddingVertical,
         ...containerStyle,
         ...style,
       }}
     >
+      {/* Prefix Icon */}
       {Icon && (
         <Icon
           size={20}
@@ -39,6 +45,7 @@ const InputField = ({
           {...iconProps}
         />
       )}
+
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -54,6 +61,19 @@ const InputField = ({
           ...inputStyle,
         }}
       />
+
+      {/* Suffix Icon */}
+      {SuffixIcon && (
+        <View style={{ marginLeft: 10 }}>
+          <SuffixIcon
+            size={25}
+            color="#94a3b8"
+            weight="regular"
+            onPress={onSuffixIconPress}
+            {...suffixIconProps}
+          />
+        </View>
+      )}
     </View>
   );
 };

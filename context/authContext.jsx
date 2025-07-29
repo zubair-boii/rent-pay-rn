@@ -34,11 +34,12 @@ export const AuthProvider = ({ children }) => {
           setUser((prev) => ({
             ...prev,
             userName: data.userName || prev.userName,
+            image: data.image || prev.image,
             createdAt: data.createdAt || null,
           }));
         }
 
-        router.replace("/home");
+        router.replace("./(tabs)/home");
       } else {
         setUser(null);
         router.replace("/welcome");

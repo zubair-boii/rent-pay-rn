@@ -8,10 +8,7 @@ const TabsLayout = () => {
     <SafeAreaProvider>
       <Tabs
         tabBar={(props) => <TabBar {...props} />}
-        screenOptions={{
-          headerShown: false,
-          tabBarStyle: {},
-        }}
+        screenOptions={{ headerShown: false }}
       >
         <Tabs.Screen name="home" options={{ title: "Home" }} />
         <Tabs.Screen name="history" options={{ title: "History" }} />

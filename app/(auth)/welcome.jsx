@@ -5,17 +5,24 @@ import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import CustomButton from "../../components/CustomButton";
 import Typo from "../../components/Typo";
+import { ThemeColors } from "../../constants/Colors";
 
 const WelcomeScreen = () => {
   const router = useRouter();
 
   return (
-    <SafeAreaProvider className="bg-slate-800 flex-1">
+    <SafeAreaProvider
+      className=" flex-1"
+      style={{
+        backgroundColor: ThemeColors.background[100],
+        paddingTop: 20,
+      }}
+    >
       {/* Top-right Sign in link */}
-      <View className="items-end p-6">
+      <View className="items-end p-[6%] flex-row  self-end">
         <TouchableOpacity
           onPress={() => router.push("./login")}
-          className="bg-slate-700 self-end rounded-2xl p-3"
+          className="bg-slate-700 self-end rounded-2xl p-[4%]"
         >
           <Typo fontWeight="600" className="text-white">
             Sign in
@@ -24,20 +31,26 @@ const WelcomeScreen = () => {
       </View>
 
       {/* Main Image */}
-      <View className="flex-1 items-center justify-center px-6">
+      <View className="flex-1 items-center ">
         <Animated.Image
           entering={FadeIn.duration(1000)}
-          source={require("../../assets/Illustrations/1.png")}
+          source={require("../../assets/Illustrations/7.png")}
           resizeMode="contain"
-          className="w-full max-h-[300px]"
+          // className="h-[10%] w-[10%]  aspect-square"
+          style={{
+            width: "100%",
+            height: "100%",
+            // backgroundColor: "yellow",
+            position: "static",
+          }}
         />
       </View>
 
       {/* Text + Bottom Sign In Button */}
-      <View className="flex-1 px-6  justify-center gap-9 ">
+      <View className="flex-1 px-[6%] gap-[9%] ">
         <Animated.View
           entering={FadeInDown.duration(1000).springify().damping(12)}
-          className="items-center "
+          className="items-center"
         >
           <Typo size={30} fontWeight="800">
             Manage your rent with

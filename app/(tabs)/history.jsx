@@ -1,12 +1,13 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const HistroyScreen = () => {
+const HistoryScreen = () => {
   return (
-    <View>
-      <Text>HistroyScreen</Text>
-    </View>
+    <SafeAreaView className="bg-slate-900 flex-1 p-[4%]">
+      <View className="pt-10"></View>
+    </SafeAreaView>
   );
 };
 
-export default HistroyScreen;
+export default HistoryScreen;

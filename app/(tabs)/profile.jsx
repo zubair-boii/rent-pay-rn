@@ -35,17 +35,17 @@ const ProfileScreen = () => {
     {
       label: "Edit Profile",
       icon: <PencilSimpleIcon size={22} color="#8b5cf6" weight="bold" />,
-      onPress: () => router.push("/profileModal"),
+      onPress: () => router.push("../(modals)/profileModal"),
     },
     {
       label: "Settings",
       icon: <GearIcon size={22} color="#10b981" weight="bold" />,
-      onPress: () => router.push("/settings"),
+      onPress: () => router.push("./settings"),
     },
     {
       label: "Privacy Policy",
       icon: <LockIcon size={22} color="#f59e0b" weight="bold" />,
-      onPress: () => router.push("/privacy-policy"),
+      onPress: () => router.push("./privacy-policy"),
     },
     {
       label: "Logout",
@@ -79,7 +79,7 @@ const ProfileScreen = () => {
       </View>
 
       <ScrollView>
-        <View className="mt-[6%] gap-[5%] ">
+        <View className="mt-[6%] gap-5 ">
           {rows.map((item, index) => (
             <Animated.View
               entering={FadeInDown.delay(index * 100)
