@@ -5,11 +5,15 @@ import {
   MoneyIcon,
   PhoneIcon,
   StorefrontIcon,
+  CheckIcon,
 } from "phosphor-react-native";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
+import * as Linking from "expo-linking";
+
 import { ThemeColors } from "../constants/Colors";
 import Typo from "./Typo";
+import LineSeparator from "./Separator";
 
 const InfoRow = ({ icon, label, value }) => (
   <View className="flex-row justify-between items-center">
@@ -57,6 +61,12 @@ const TenantCard = ({
     });
   };
 
+  const ShowAlertCall = () => {
+    Linking.openURL(`tel: ${phoneNumber}`);
+  };
+
+  const handleCheck = () => {};
+
   return (
     <View className="bg-slate-800 p-5 rounded-2xl shadow-sm shadow-black/30 space-y-5 mb-5">
       <TouchableOpacity onLongPress={goToDetails}>
@@ -78,7 +88,7 @@ const TenantCard = ({
             <InfoRow
               icon={<MoneyIcon size={18} color="#94a3b8" />}
               label="Amount"
-              value={shopNumber <= 15 ? "Rs. 1500" : "Rs. 2000"}
+              value={`Rs. ${amount}`}
             />
             <InfoRow
               icon={<StorefrontIcon size={18} color="#94a3b8" />}
@@ -99,6 +109,37 @@ const TenantCard = ({
             <View>
               <StatusBadge hasPaid={hasPaid} />
             </View>
+          </View>
+
+          {/*seperator*/}
+          <View style={{ margin: 5 }}>
+            <LineSeparator thickness={0.5} color={ThemeColors.dimText} />
+          </View>
+
+          {/* Button */}
+          <View className="flex-row justify-between items-center">
+            <TouchableOpacity
+              style={{ backgroundColor: ThemeColors.tint }}
+              className="rounded-3xl  items-center justify-center p-3"
+              onPress={ShowAlertCall}
+            >
+              <PhoneIcon
+                size={30}
+                color={ThemeColors.background[100]}
+                weight="fill"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleCheck}
+              style={{ backgroundColor: ThemeColors.tint }}
+              className="rounded-3xl  items-center justify-center p-3"
+            >
+              <CheckIcon
+                size={30}
+                color={ThemeColors.background[100]}
+                weight="bold"
+              />
+            </TouchableOpacity>
           </View>
         </View>
 

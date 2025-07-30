@@ -5,7 +5,7 @@ const FloatingAddButton = ({ onPress }) => {
   return (
     <TouchableOpacity style={styles.fab} onPress={onPress}>
       {/* You can use text or icon */}
-      <PlusIcon size={24} color="#fff" weight="bold" />
+      <PlusIcon size={24} color="#0f172a" weight="bold" />
       {/* OR */}
       {/* <Text style={styles.fabText}>+</Text> */}
     </TouchableOpacity>
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   fabText: {
-    color: "white",
+    color: "balck",
     fontSize: 30,
     fontWeight: "bold",
   },

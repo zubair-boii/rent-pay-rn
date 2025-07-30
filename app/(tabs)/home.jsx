@@ -12,7 +12,7 @@ import TenantCard from "../../components/TenantCard";
 import Typo from "../../components/Typo";
 import { ThemeColors } from "../../constants/Colors";
 import { useAuth } from "../../context/authContext";
-import { collection, getDoc, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { firestore } from "../../config/firebase";
 
 import FloatingAddButton from "../../components/FloatingAddButton";
@@ -55,7 +55,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView className="bg-slate-900 flex-1 px-4 pt-16">
       {/* Header Card */}
-      <View className="bg-slate-800 p-3 rounded-full mb-6 ">
+      <View className="bg-slate-800 p-3 rounded-full mb-5 ">
         <View className="flex-row justify-between items-center">
           {/* Text Block */}
           <View className="flex-1 pl-4">
@@ -98,6 +98,7 @@ const HomeScreen = () => {
 
         <View className="justify-center items-center">
           <FloatingAddButton
+            style={{ textColor: "#0f172a" }}
             onPress={() => {
               router.push("../(screens)/create");
             }}
@@ -105,18 +106,26 @@ const HomeScreen = () => {
         </View>
       </View>
 
-      {/* date */}
-      <View style={{ alignSelf: "flex-end", marginVertical: 10 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginVertical: 5,
+          alignItems: "center",
+        }}
+      >
+        {/* Cards */}
+        <Typo size={20} fontWeight="600" className="text-white mb-1">
+          Rents:
+        </Typo>
+
+        {/* date */}
         <Typo color={ThemeColors.tint}>{showDate()}</Typo>
       </View>
 
-      {/* Cards */}
-      <Typo size={20} fontWeight="600" className="text-white mb-1">
-        Rents:
-      </Typo>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         {loading ? (
-          <View className="items-center justify-center">
+          <View className="items-center justify-center flex-1">
             <ActivityIndicator color={"white"} size={"large"} />
           </View>
         ) : tenants.length == 0 ? (
@@ -124,17 +133,19 @@ const HomeScreen = () => {
             ✅ No tenants found
           </Typo>
         ) : (
-          tenants.map((tenant) => (
-            <TenantCard
-              key={tenant.id}
-              name={tenant.name}
-              dateJoined={tenant.dateJoined}
-              hasPaid={tenant.hasPaid}
-              phoneNumber={tenant.phoneNumber}
-              shopNumber={tenant.id}
-              amount={tenant.amount}
-            />
-          ))
+          tenants
+            .filter((tenant) => tenant.hasPaid === false)
+            .map((tenant) => (
+              <TenantCard
+                key={tenant.id}
+                name={tenant.name}
+                dateJoined={tenant.dateJoined}
+                hasPaid={tenant.hasPaid}
+                phoneNumber={tenant.phoneNumber}
+                shopNumber={tenant.id}
+                amount={tenant.amount}
+              />
+            ))
         )}
       </ScrollView>
     </SafeAreaView>

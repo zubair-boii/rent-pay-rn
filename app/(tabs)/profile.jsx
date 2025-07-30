@@ -37,15 +37,15 @@ const ProfileScreen = () => {
       icon: <PencilSimpleIcon size={22} color="#8b5cf6" weight="bold" />,
       onPress: () => router.push("../(modals)/profileModal"),
     },
-    {
-      label: "Settings",
-      icon: <GearIcon size={22} color="#10b981" weight="bold" />,
-      onPress: () => router.push("./settings"),
-    },
+    // {
+    //   label: "Settings",
+    //   icon: <GearIcon size={22} color="#10b981" weight="bold" />,
+    //   onPress: () => router.push("../(screens)/settings"),
+    // },
     {
       label: "Privacy Policy",
       icon: <LockIcon size={22} color="#f59e0b" weight="bold" />,
-      onPress: () => router.push("./privacy-policy"),
+      onPress: () => router.push("../(screens)/privacy-policy"),
     },
     {
       label: "Logout",

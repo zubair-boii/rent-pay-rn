@@ -1,15 +1,19 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { TrashIcon } from "phosphor-react-native";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Checkbox } from "expo-checkbox";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 import BackButton from "../../components/BackButton";
 import CustomButton from "../../components/CustomButton";
@@ -17,26 +21,26 @@ import Input from "../../components/Input";
 import Typo from "../../components/Typo";
 import NumberInput from "../../components/NumberInput";
 import DateInput from "../../components/DateInput";
+import { firestore } from "../../config/firebase";
+import { useAuth } from "../../context/authContext";
+import { ThemeColors } from "../../constants/Colors";
 
 export default function TenantDetailsScreen() {
   const params = useLocalSearchParams();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleDateChange = (event, selectedDate) => {
-    setShowDatePicker(false); // hide picker after selection
-    if (selectedDate) {
-      const formattedDate = selectedDate.toISOString().split("T")[0]; // e.g. "2025-07-28"
-      handleChange("dateJoined", formattedDate);
-    }
-  };
-
-  const [details, setDetails] = useState({
+  const origDetails = {
     name: params.name || "",
     dateJoined: params.dateJoined || "",
-    hasPaid: params.hasPaid === "true", // convert string to boolean
+    hasPaid: params.hasPaid === true, // convert string to boolean
     shopNumber: parseInt(params.shopNumber) || 0,
     phoneNumber: params.phoneNumber || "",
     amount: params.amount || "",
-  });
+  };
+
+  const [details, setDetails] = useState(origDetails);
 
   const handleChange = (field, value) => {
     setDetails((prev) => ({ ...prev, [field]: value }));
@@ -49,16 +53,71 @@ export default function TenantDetailsScreen() {
     }));
   };
 
-  const saveDetails = () => {
+  const handleSaveDetails = async () => {
     const { name, phoneNumber, dateJoined, shopNumber, amount } = details;
     if (!name || !phoneNumber || !dateJoined || !shopNumber || !amount) {
       Alert.alert("Error", "Please fill all the fields");
       return;
     }
 
-    // TODO: UPLOAD TO DB
-    console.log("good to go");
+    try {
+      setLoading(true);
+      const tenantRef = doc(
+        firestore,
+        "users",
+        user.uid,
+        "tenants",
+        shopNumber.toString()
+      );
+
+      await updateDoc(tenantRef, details);
+
+      console.log("✅ Tenant updated!");
+    } catch (error) {
+      console.log("Error adding tenant:", error);
+    } finally {
+      setLoading(false);
+      router.back();
+    }
   };
+
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+      const tenantRef = doc(
+        firestore,
+        "users",
+        user.uid,
+        "tenants",
+        details.shopNumber.toString()
+      );
+      await deleteDoc(tenantRef);
+      console.log("✅ Tenant deleted!");
+    } catch (error) {
+      console.log("Error deleting tenant:", error);
+    } finally {
+      setLoading(false);
+      router.back();
+    }
+  };
+
+  const handleShowUpdateAlert = () => {
+    Alert.alert(
+      "Update Tenant",
+      "Are you sure you want to save these changes?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          style: "default",
+          onPress: () => handleSaveDetails(),
+        },
+      ]
+    );
+  };
+
+  // 🔍 Compare here — runs on every render, which is what we want
+  const hasChanges = JSON.stringify(details) !== JSON.stringify(origDetails);
 
   return (
     <SafeAreaView
@@ -66,11 +125,20 @@ export default function TenantDetailsScreen() {
       className="px-10 pt-8"
     >
       {/* Header */}
-      <View className="flex-row justify-between items-center mb-6">
+      <View className="flex-row justify-around items-center mb-6 gap-10">
         <BackButton />
-        <Text className="text-white text-xl font-semibold mr-[25%]">
+        <Text className="text-white text-xl font-semibold self-center">
           Edit Tenant Details
         </Text>
+
+        <View>
+          <TouchableOpacity
+            className="bg-red-500 rounded-full p-3"
+            onPress={handleDelete}
+          >
+            <TrashIcon color="white" size={25} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Content */}
@@ -143,11 +211,17 @@ export default function TenantDetailsScreen() {
                 }}
               ></Checkbox>
             </View>
+
+            {/* delete tenant */}
           </View>
 
           {/* Save Button */}
           <View className="mt-[20%]">
-            <CustomButton onPress={saveDetails}>Save Details</CustomButton>
+            {hasChanges && (
+              <CustomButton onPress={handleShowUpdateAlert} loading={loading}>
+                Save Details
+              </CustomButton>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
