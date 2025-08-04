@@ -1,12 +1,11 @@
-import {router, useRouter} from "expo-router";
-import {EnvelopeIcon, LockIcon} from "phosphor-react-native";
+import {useRouter} from "expo-router";
+import {EnvelopeIcon} from "phosphor-react-native";
 import React, {useState} from "react";
 import {
     Alert,
     Keyboard,
     Pressable,
     ScrollView,
-    TouchableOpacity,
     TouchableWithoutFeedback,
     View,
 } from "react-native";
@@ -18,33 +17,30 @@ import InputField from "../../components/Input";
 import Typo from "../../components/Typo";
 import {useAuth} from "../../context/authContext";
 
-const LoginScreen = () => {
+const ForgotPasswordScreen = () => {
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter()
+    const router = useRouter();
 
-    const {login} = useAuth();
+    const {forgotPassword} = useAuth();
 
     const handleSubmit = async () => {
-        if (!email || !password) {
-            Alert.alert("Sign in", "Please fill all the fields");
+        if (!email) {
+            Alert.alert("Error", "Please enter your email.");
             return;
         }
 
-        setIsLoading(true);
-
         try {
-            const res = await login(email, password);
-
-            if (res.success === false) {
-                Alert.alert("Sign in", res.msg);
-            }
+            setIsLoading(true);
+            await forgotPassword(email);
+            Alert.alert("Success", "Password reset email sent!");
         } catch (error) {
-            console.error("Error during login:", error);
-            Alert.alert("Sign in", "Something went wrong.");
+            console.error("Password reset error:", error);
+            Alert.alert("Error", error.message || "Something went wrong.");
         } finally {
             setIsLoading(false);
+            router.back()
+            setEmail("")
         }
     };
 
@@ -53,25 +49,20 @@ const LoginScreen = () => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <ScrollView keyboardShouldPersistTaps="handled">
                     <View className="m-5">
-                        {/* Back Button */}
                         <BackButton/>
 
                         <View className="mt-[30%]">
                             <Typo size={30} fontWeight="800">
-                                Hey,
-                            </Typo>
-                            <Typo size={30} fontWeight="800">
-                                Welcome Back
+                                Forgot your password
                             </Typo>
                         </View>
 
                         <View className="mt-[10%]">
                             <Typo size={15} color="#90a1b9" fontWeight="400">
-                                Your rental dashboard is just a login away
+                                Type your email to reset your password.
                             </Typo>
                         </View>
 
-                        {/* Input Fields */}
                         <View className="mt-[10%] gap-5">
                             <InputField
                                 Icon={EnvelopeIcon}
@@ -79,30 +70,17 @@ const LoginScreen = () => {
                                 value={email}
                                 onChangeText={setEmail}
                             />
-                            <InputField
-                                Icon={LockIcon}
-                                placeholder="Password"
-                                value={password}
-                                onChangeText={setPassword}
-                                secureTextEntry
-                            />
-                        </View>
-
-                        <View className="mt-[4%] self-end">
-                            <TouchableOpacity onPress={() => router.push("./forgot-password")}>
-                                <Typo>Forgot Password?</Typo>
-                            </TouchableOpacity>
                         </View>
 
                         <View className="mt-[5%]">
                             <CustomButton
                                 onPress={handleSubmit}
-                                fontSize={25}
+                                fontSize={20}
                                 fontWeight="800"
                                 textColor="#1d293d"
                                 loading={isLoading}
                             >
-                                Sign in
+                                Send Code
                             </CustomButton>
                         </View>
 
@@ -121,4 +99,4 @@ const LoginScreen = () => {
     );
 };
 
-export default LoginScreen;
+export default ForgotPasswordScreen;
