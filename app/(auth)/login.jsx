@@ -41,7 +41,7 @@ const LoginScreen = () => {
         Alert.alert("Sign in", res.msg);
       }
     } catch (error) {
-      console.error("Error during registration:", error);
+      console.error("Error during login:", error);
       Alert.alert("Sign in", "Something went wrong.");
     } finally {
       setIsLoading(false);
@@ -72,7 +72,7 @@ const LoginScreen = () => {
             </View>
 
             {/* Input Fields */}
-            <View className="mt-[10%]">
+            <View className="mt-[10%] gap-5">
               <InputField
                 Icon={EnvelopeIcon}
                 placeholder="Email"

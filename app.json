@@ -12,6 +12,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.zubair.rentpay",
       "androidNavigationBar": {
         "visible": "leanback",
         "barStyle": "dark-content"

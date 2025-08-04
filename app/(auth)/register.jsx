@@ -70,7 +70,7 @@ const SignupScreen = () => {
             </View>
 
             {/* Input Fields */}
-            <View className="mt-[10%]">
+            <View className="mt-[10%] gap-5">
               <InputField
                 Icon={UserIcon}
                 placeholder="Username"
