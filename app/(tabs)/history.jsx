@@ -16,6 +16,8 @@ export default function HistoryScreen() {
     const {user} = useAuth();
     const [tenants, setTenants] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
 
     useFocusEffect(
         useCallback(() => {
@@ -26,6 +28,7 @@ export default function HistoryScreen() {
                 await loadLogs(user, (data) => {
                     if (isActive) {
                         setTenants(data);
+                        setFilteredData(data);
                     }
                 });
                 if (isActive) {
@@ -58,14 +61,14 @@ export default function HistoryScreen() {
         ], {cancelable: true})
     }
 
-    // const handleSearch = (text) => {
-    //     const lowerCased = text.toLowerCase();
-    //
-    //     const filteredTenants = tenants.filter((tenant) => tenant.name.toLowerCase().includes(lowerCased)
-    //         || tenant.id.toLowerCase().includes(lowerCased))
-    //
-    //     setFilteredTenants(filteredTenants);
-    // }
+    const handleSearch = (text) => {
+        const lowerCased = text.toLowerCase();
+
+        const filteredTenants = tenants.filter((tenant) => tenant.name.toLowerCase().includes(lowerCased)
+            || tenant.id.toLowerCase().includes(lowerCased))
+
+        setFilteredData(filteredTenants);
+    }
     return (
         <SafeAreaView
             style={{
@@ -105,15 +108,17 @@ export default function HistoryScreen() {
                                             outerWidth: "100%",
                                         }}
                                         onChangeText={(text) => {
-                                            console.log("hello");
+                                            setSearchQuery(text);
+                                            handleSearch(text);
                                         }}
                                         placeholder="Search"
                                         SuffixIcon={MagnifyingGlassIcon}
                                         paddingVertical={"3%"}
+                                        value={searchQuery}
                                     />
                                 </View>
                                 <ScrollView className="w-full px-5 py-4">
-                                    {tenants.map((tenant, index) => (
+                                    {filteredData.map((tenant, index) => (
                                         <HistoryLog
                                             key={index}
                                             name={tenant.name}
