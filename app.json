@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-test",
-    "slug": "expo-test",
+    "name": "RentPay",
+    "slug": "rentpay",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -12,11 +12,15 @@
       "supportsTablet": true
     },
     "android": {
+      "androidNavigationBar": {
+        "visible": "leanback",
+        "barStyle": "dark-content"
+      },
+      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true
+      }
     },
     "web": {
       "bundler": "metro",
