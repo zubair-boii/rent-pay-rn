@@ -1,35 +1,74 @@
 import {MagnifyingGlassIcon} from "phosphor-react-native";
 import React, {useEffect, useState} from "react";
-import {
-    ActivityIndicator,
-    Image,
-    SafeAreaView,
-    ScrollView,
-    View,
-} from "react-native";
+import {ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, View,} from "react-native";
 import Input from "../../components/Input";
 import TenantCard from "../../components/TenantCard";
 import Typo from "../../components/Typo";
 import {ThemeColors} from "../../constants/Colors";
 import {useAuth} from "../../context/authContext";
 import {collection, doc, onSnapshot, updateDoc} from "firebase/firestore";
-import {firestore} from "../../config/firebase";
-
+import {firestore, auth} from "../../config/firebase";
 import FloatingAddButton from "../../components/FloatingAddButton";
 import {useRouter} from "expo-router";
 import {addToHistoryLog} from "../../utils/storage-utils";
 import {Undo} from "../../utils/firebase-utils";
 
 const HomeScreen = () => {
-    const {user} = useAuth();
+    const {user, sendVerificationEmail, reloadUser} = useAuth();
     const [tenants, setTenants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filteredTenants, setFilteredTenants] = useState([])
     const [searchQuery, setSearchQuery] = useState("")
+    const [cooldown, setCooldown] = useState(0);
     const router = useRouter();
 
     useEffect(() => {
+        if (cooldown > 0) {
+            const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [cooldown]);
+
+    const handleEmailVerification = async () => {
+
+        if (cooldown > 0) {
+            Alert.alert("Please wait", `Try again in ${cooldown} seconds.`);
+            return;
+        }
+
+        try {
+            await reloadUser();
+            await sendVerificationEmail(); // No parameter now
+            setCooldown(60);
+            router.replace("/(auth)/verify-email");
+
+        } catch (error) {
+            Alert.alert("Email Verification Error", error.message || "Something went wrong.");
+            console.log("Error verifying email:", error);
+        }
+    };
+
+    useEffect(() => {
         if (!user?.uid) return;
+
+
+        if (!auth.currentUser.emailVerified) {
+            Alert.alert("Email Verification Required", "A verification link will be sent to your email.", [
+                {
+                    text: "Cancel",
+                    onPress: () => {
+                    },
+                    style: "destructive"
+                },
+
+                {
+                    text: "Send Link",
+                    onPress: () => handleEmailVerification(),
+                }
+
+            ]);
+            return;
+        }
 
         const tenantRef = collection(firestore, "users", user.uid, "tenants");
 
@@ -52,9 +91,7 @@ const HomeScreen = () => {
 
     const showDate = () => {
         const date = new Date();
-        const formattedDate = date.toLocaleDateString("en-GB");
-
-        return formattedDate;
+        return date.toLocaleDateString("en-GB");
     };
 
     const handleCheck = async (shopNumber) => {
