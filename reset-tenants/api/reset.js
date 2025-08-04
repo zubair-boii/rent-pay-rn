@@ -2,13 +2,17 @@ const admin = require("firebase-admin");
 
 if (!admin.apps.length) {
     admin.initializeApp({
-        credential: admin.credential.applicationDefault(), // Uses env variable or local credentials
+        credential: admin.credential.cert({
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        }),
     });
 }
 
 const db = admin.firestore();
 
-exports.handler = async function () {
+module.exports = async (req, res) => {
     try {
         const users = await db.collection("users").get();
 
@@ -16,7 +20,6 @@ exports.handler = async function () {
             const tenants = await db.collection("users").doc(user.id).collection("tenants").get();
 
             const batch = db.batch();
-
             tenants.forEach((tenantDoc) => {
                 batch.update(tenantDoc.ref, {hasPaid: false});
             });
@@ -24,14 +27,9 @@ exports.handler = async function () {
             await batch.commit();
         }
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({message: "Reset successful"}),
-        };
-    } catch (error) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({error: error.message}),
-        };
+        res.status(200).json({message: "Reset done!"});
+    } catch (err) {
+        console.error("Error:", err);
+        res.status(500).json({error: err.message});
     }
 };
