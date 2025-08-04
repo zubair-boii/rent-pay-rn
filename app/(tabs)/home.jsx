@@ -25,7 +25,7 @@ const HomeScreen = () => {
     const [tenants, setTenants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filteredTenants, setFilteredTenants] = useState([])
-    const [searchQuery, setSearchQuery] = useState([])
+    const [searchQuery, setSearchQuery] = useState("")
     const router = useRouter();
 
     useEffect(() => {
@@ -159,6 +159,7 @@ const HomeScreen = () => {
                         placeholder="Search by name or shop no..."
                         SuffixIcon={MagnifyingGlassIcon}
                         paddingVertical={"3%"}
+                        value={searchQuery}
                         onChangeText={(text) => {
                             setSearchQuery(text)
                             handleSearch(text)
