@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  deleteUser,
   updateProfile,
 } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
@@ -39,10 +40,10 @@ export const AuthProvider = ({ children }) => {
           }));
         }
 
-        router.replace("./(tabs)/home");
+        router.replace("/(tabs)/home")
       } else {
         setUser(null);
-        router.replace("/welcome");
+        router.replace("/(auth)/welcome");
       }
     });
 
@@ -112,8 +113,7 @@ export const AuthProvider = ({ children }) => {
         .replace("auth/", "")
         .replace(/-/g, " ")
         .trim();
-      // return { success: false, msg };
-      console.log(msg);
+      return { success: false, msg };
     }
   };
 
@@ -122,6 +122,14 @@ export const AuthProvider = ({ children }) => {
       await signOut(auth);
     } catch (error) {
       console.log("Logout error:", error.message);
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      await deleteUser(auth.currentUser);
+    } catch (error) {
+      console.log("Delete account error:", error.message);
     }
   };
 
