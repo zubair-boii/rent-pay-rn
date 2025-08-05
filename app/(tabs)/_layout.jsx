@@ -102,7 +102,7 @@ const TabLayout = () => {
         />
       </Tabs>
 
-      <StatusBar style="auto" />
+      <StatusBar translucent={true} style={"auto"} />
     </>
   );
 };
