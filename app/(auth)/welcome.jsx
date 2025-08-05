@@ -71,7 +71,7 @@ const WelcomeScreen = () => {
             Designed and Developed
           </Typo>
           <Typo color="#90a1b9" size={17} fontWeight="300">
-            with ❤ by zubair khan.
+             by zubair khan.
           </Typo>
         </Animated.View>
 
@@ -84,7 +84,7 @@ const WelcomeScreen = () => {
         >
           <CustomButton
             onPress={() => {
-              router.push("./register");
+              router.push("/(auth)/register");
             }}
             backgroundColor="#3fbdf1"
           >

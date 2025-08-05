@@ -4,6 +4,7 @@ import { StatusBar } from "react-native";
 import { AuthProvider } from "../context/authContext";
 
 import "../global.css";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const RootLayout = () => {
   return (
